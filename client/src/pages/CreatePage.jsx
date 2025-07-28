@@ -2,11 +2,13 @@ import axios from "axios";
 import { ArrowBigLeftIcon } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import axiosInstance from "../lib/axios";
 const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
@@ -15,8 +17,15 @@ const CreatePage = () => {
     }
     setIsLoading(true);
     try {
+      await axiosInstance.post("/notes", {
+        title,
+        content,
+      });
+      toast.success("Note created successfully!");
+      navigate("/");
     } catch (error) {
-      toast.error;
+      console.log("Error occur creating note ", error);
+      toast.error("Failed to create new note!");
     } finally {
       setIsLoading(false);
     }
